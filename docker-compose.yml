@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+  web:
+    build: .
+    container_name: django
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+  bot:
+    build: .
+    container_name: bot
+    command: python manage.py bot
+    env_file:
+      - ./.env
+    depends_on:
+      - web
+  celery:
+    build: .
+    container_name: celery
+    command: celery -A dtb worker --loglevel=INFO
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - web
+  celery-beat:
+    build: .
+    container_name: beat
+    command: celery -A dtb beat -l info --scheduler django_celery_beat.schedulers.DatabaseScheduler
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - celery
+      - web
+
+volumes:
+  postgres_data:
