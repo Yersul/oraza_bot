@@ -13,16 +13,12 @@ PRAY_TYPE = (
 class Pray(models.Model):
     name_kk = models.CharField(_('Название (каз)'), max_length=255)
     name_ru = models.CharField(_('Название (рус)'), max_length=255)
-    text_kk = models.TextField(_('Текст (каз)'), blank=True)
-    text_ru = models.TextField(_('Текст (рус)'), blank=True)
     link = models.CharField(
         _('Ссылка на источник'), max_length=1000, blank=True)
     pray_type = models.IntegerField(_('Тип'), default=0, choices=PRAY_TYPE)
 
-    # category = models.ImageField
-
     def __str__(self):
-        return self.text_kk
+        return self.name_kk
 
     class Meta:
         verbose_name = 'Молитва'

@@ -16,6 +16,8 @@ from telegram import (
 )
 
 from bot.handlers.menu.menu import command_menu
+from bot.handlers.pray.item import command_pray
+from bot.handlers.pray.list import command_pray_list
 from bot.handlers.schedule.cities import command_select_city, command_select_region_city
 from bot.handlers.schedule.schedule import command_schedule
 from bot.handlers.start.start import command_start
@@ -40,18 +42,25 @@ def setup_dispatcher(callback):
 
     # change language
     callback.add_handler(CallbackQueryHandler(command_menu, pattern='kz'))
+    callback.add_handler(CallbackQueryHandler(command_menu, pattern='menu'))
     for i in range(10):
         if(i == 0):
             callback.add_handler(CallbackQueryHandler(
                 command_select_city, pattern=f'cmd_{i}'))
+        if(i == 2):
+            callback.add_handler(CallbackQueryHandler(
+                command_pray_list, pattern=f'cmd_{i}'))
         callback.add_handler(CallbackQueryHandler(
             cmd_stop, pattern=f'cmd_{i}'))
 
     callback.add_handler(CallbackQueryHandler(
         command_select_region_city, pattern='select_region_city'))
-
+    
     callback.add_handler(CallbackQueryHandler(
         command_schedule, pattern=f'city_'))
+
+    callback.add_handler(CallbackQueryHandler(
+        command_pray, pattern=f'pray_'))
 
     callback.add_handler(CallbackQueryHandler(cmd_stop, pattern='ru'))
 
