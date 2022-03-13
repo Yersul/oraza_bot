@@ -1,6 +1,6 @@
-from tabnanny import verbose
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from bot_messages.models.action import Action
 from bot_messages.models.city import City
 
 
@@ -16,6 +16,7 @@ class Pray(models.Model):
     link = models.CharField(
         _('Ссылка на источник'), max_length=1000, blank=True)
     pray_type = models.IntegerField(_('Тип'), default=0, choices=PRAY_TYPE)
+    action = models.ForeignKey(Action, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name_kk

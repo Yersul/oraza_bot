@@ -5,7 +5,7 @@ from bot_messages.models.pray import Pray
 from bot_messages.models.schedule import Schedule
 
 
-def command_pray(update: Update, context: CallbackContext):
+def command_category_pray(update: Update, context: CallbackContext):
     pray_id = int(update.callback_query.data.split("_")[-1])
     pray = Pray.objects.filter(id=pray_id).last()
     if(pray == None):
@@ -14,7 +14,7 @@ def command_pray(update: Update, context: CallbackContext):
     
     
     keyboard = [
-      [InlineKeyboardButton("Артқа", callback_data="cmd_2")],
+      [InlineKeyboardButton("Артқа", callback_data="cmd_1")],
       [InlineKeyboardButton("Негізгі меню", callback_data="menu")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)

@@ -29,19 +29,19 @@ class UserAdmin(admin.ModelAdmin):
         if 'apply' in request.POST:
             broadcast_message_text = request.POST["broadcast_text"]
 
-            if DEBUG:
-                for user_id in user_ids:
-                    _send_message(
-                        user_id=user_id,
-                        text=broadcast_message_text,
-                    )
-                self.message_user(
-                    request, f"Just broadcasted to {len(queryset)} users")
-            else:
-                broadcast_message.delay(
-                    text=broadcast_message_text, user_ids=list(user_ids))
-                self.message_user(
-                    request, f"Broadcasting of {len(queryset)} messages has been started")
+            # if DEBUG:
+            for user_id in user_ids:
+                _send_message(
+                    user_id=user_id,
+                    text=broadcast_message_text,
+                )
+            self.message_user(
+                request, f"Just broadcasted to {len(queryset)} users")
+            # else:
+            #     broadcast_message.delay(
+            #         text=broadcast_message_text, user_ids=list(user_ids))
+            #     self.message_user(
+            #         request, f"Broadcasting of {len(queryset)} messages has been started")
 
             return HttpResponseRedirect(request.get_full_path())
         else:

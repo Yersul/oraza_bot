@@ -43,7 +43,6 @@ def command_select_region_city(update: Update, context: CallbackContext):
     except:
         offset = 0
 
-    print((offset*5), (offset*5 + 5))
     cities = cities[(offset*5):(offset*5 + 5)]
     keyboard = []
     for chunk in chunker(cities, message_obj.inline_count):
