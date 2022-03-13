@@ -32,7 +32,8 @@ class User(CreateUpdateTracker):
         max_length=8, help_text="Telegram client's lang", **nb)
     deep_link = models.CharField(max_length=64, **nb)
     selected_lang = models.CharField(max_length=3, blank=True, choices=LANG)
-    selected_city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, blank=True)
+    selected_city = models.ForeignKey(
+        City, on_delete=models.CASCADE, null=True, blank=True)
     is_blocked_bot = models.BooleanField(default=False)
 
     is_admin = models.BooleanField(default=False)
