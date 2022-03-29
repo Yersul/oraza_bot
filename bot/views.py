@@ -15,10 +15,10 @@ def index(request):
 
 class TelegramBotWebhookView(View):
     def post(self, request, *args, **kwargs):
-        if DEBUG:
-            process_telegram_event(json.loads(request.body))
-        else:
-            process_telegram_event.delay(json.loads(request.body))
+        # if DEBUG:
+        process_telegram_event(json.loads(request.body))
+        # else:
+            # process_telegram_event.delay(json.loads(request.body))
         return JsonResponse({"ok": "POST request processed"})
 
     def get(self, request, *args, **kwargs):

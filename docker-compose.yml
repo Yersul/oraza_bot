@@ -1,47 +1,67 @@
 version: "3.8"
 
 services:
-  # redis:
-  #   image: redis:alpine
-  #   container_name: redis
   web:
     build: .
-    container_name: django
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: django-admin
+    command:
+      - /bin/sh
+      - /code/scripts/entrypoint.sh
     volumes:
       - .:/code
     ports:
       - "8000:8000"
-    env_file:
-      - ./.env
+    env_file: .env
   bot:
     build: .
     container_name: bot
     command: python manage.py bot
+    env_file: .env
+    depends_on:
+      - web
+  redis:
+    image: "redis:alpine"
+  celery:
+    build: .
+    container_name: celery
+    command: celery -A oraza_bot worker --loglevel=INFO
+    volumes:
+      - .:/code
     env_file:
       - ./.env
     depends_on:
+      - redis
       - web
-  # celery:
-  #   build: .
-  #   container_name: celery
-  #   command: celery -A oraza_bot worker --loglevel=INFO
-  #   volumes:
-  #     - .:/code
-  #   env_file:
-  #     - ./.env
-  #   depends_on:
-  #     - redis
-  #     - web
-  # celery-beat:
-  #   build: .
-  #   container_name: beat
-  #   command: celery -A dtb beat -l info --scheduler django_celery_beat.schedulers.DatabaseScheduler
-  #   volumes:
-  #     - .:/code
-  #   env_file:
-  #     - ./.env
-  #   depends_on:
-  #     - redis
-  #     - celery
-  #     - web
+  celery-beat:
+    build: .
+    container_name: beat
+    command: celery -A oraza_bot beat -l info --scheduler django_celery_beat.schedulers.DatabaseScheduler
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - celery
+      - web
+
+  nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./static/:/static/
+      - ./media/:/media/
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

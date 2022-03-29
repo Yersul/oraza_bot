@@ -27,7 +27,7 @@ from bot.handlers.schedule.cities import command_select_city, command_select_reg
 from bot.handlers.schedule.schedule import command_schedule
 from bot.handlers.start.start import command_start
 
-from oraza_bot.settings import TELEGRAM_TOKEN
+from oraza_bot.settings import TELEGRAM_TOKEN, DEBUG
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -129,8 +129,17 @@ def run_pooling():
 
 
 bot = Bot(TELEGRAM_TOKEN)
+bot.set_webhook(max_connections=10000)
+
+def process_telegram_event(update_json):
+    update = Update.de_json(update_json, bot)
+    dispatcher.process_update(update)
+
 try:
     TELEGRAM_BOT_USERNAME = bot.get_me()["username"]
 except telegram.error.Unauthorized:
     logging.error(f"Invalid TELEGRAM_TOKEN.")
     sys.exit(1)
+
+n_workers = 1 if DEBUG else 4
+dispatcher = setup_dispatcher(Dispatcher(bot, update_queue=None, workers=n_workers, use_context=True))
