@@ -26,7 +26,7 @@ from bot.handlers.request.request import command_request, command_request_updato
 from bot.handlers.schedule.cities import command_select_city, command_select_region_city
 from bot.handlers.schedule.schedule import command_schedule
 from bot.handlers.start.start import command_start
-
+from oraza_bot.celery import app
 from oraza_bot.settings import TELEGRAM_TOKEN, DEBUG
 
 from telegram import Update
@@ -129,8 +129,9 @@ def run_pooling():
 
 
 bot = Bot(TELEGRAM_TOKEN)
-bot.set_webhook(max_connections=10000)
+bot.set_webhook(url=f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook?url=https://bot.garyshker-app.kz/{TELEGRAM_TOKEN}/", max_connections=10000)
 
+@app.task(ignore_result=True)
 def process_telegram_event(update_json):
     update = Update.de_json(update_json, bot)
     dispatcher.process_update(update)
