@@ -129,7 +129,7 @@ def run_pooling():
 
 
 bot = Bot(TELEGRAM_TOKEN)
-bot.set_webhook(url=f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook?url=https://bot.garyshker-app.kz/{TELEGRAM_TOKEN}/", max_connections=10000)
+bot.set_webhook(url=f"https://bot.gpkentau.kz/{TELEGRAM_TOKEN}/", max_connections=10000)
 
 @app.task(ignore_result=True)
 def process_telegram_event(update_json):

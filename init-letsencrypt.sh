@@ -9,7 +9,7 @@ email="kazbekov.bekdaulet2000@gmail.com" # Adding a valid address is strongly re
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 if [ -d "$data_path" ]; then
-  read -p "Existing data found for bot.garyshker-app.kz. Continue and replace existing certificate? (y/N) " decision
+  read -p "Existing data found for bot.gpkentau.kz. Continue and replace existing certificate? (y/N) " decision
   if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
     exit
   fi
@@ -24,9 +24,9 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
-echo "### Creating dummy certificate for bot.garyshker-app.kz ..."
-path="/etc/letsencrypt/live/bot.garyshker-app.kz"
-mkdir -p "$data_path/conf/live/bot.garyshker-app.kz"
+echo "### Creating dummy certificate for bot.gpkentau.kz ..."
+path="/etc/letsencrypt/live/bot.gpkentau.kz"
+mkdir -p "$data_path/conf/live/bot.gpkentau.kz"
 docker-compose run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 30\
     -keyout '$path/privkey.pem' \
@@ -39,17 +39,17 @@ echo "### Starting nginx ..."
 docker-compose up --force-recreate -d nginx
 echo
 
-echo "### Deleting dummy certificate for bot.garyshker-app.kz ..."
+echo "### Deleting dummy certificate for bot.gpkentau.kz ..."
 docker-compose run --rm --entrypoint "\
-  rm -Rf /etc/letsencrypt/live/bot.garyshker-app.kz && \
-  rm -Rf /etc/letsencrypt/archive/bot.garyshker-app.kz && \
-  rm -Rf /etc/letsencrypt/renewal/bot.garyshker-app.kz.conf" certbot
+  rm -Rf /etc/letsencrypt/live/bot.gpkentau.kz && \
+  rm -Rf /etc/letsencrypt/archive/bot.gpkentau.kz && \
+  rm -Rf /etc/letsencrypt/renewal/bot.gpkentau.kz.conf" certbot
 echo
 
 
-echo "### Requesting Let's Encrypt certificate for bot.garyshker-app.kz ..."
-#Join bot.garyshker-app.kz to -d args
-domain_args="-d bot.garyshker-app.kz"
+echo "### Requesting Let's Encrypt certificate for bot.gpkentau.kz ..."
+#Join bot.gpkentau.kz to -d args
+domain_args="-d bot.gpkentau.kz"
 
 # Select appropriate email arg
 case "$email" in
